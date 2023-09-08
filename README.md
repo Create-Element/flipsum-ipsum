@@ -1,23 +1,26 @@
 # Flipsum Ipsum
 
-## Browser Extension
+Flipsum Ipsum is a publically available API for generating random ipsum text.
 
-A browser extension that uses the Flipsum Ipsum API to generate random ipsum text you can copy/paste into your projects.
+## The Flipsum Ipsum Browser Extension
+
+The browser extension makes it easy to generate ipsum text in your browser that you can copy/paste into your projects.
 
 ![Example ipsum browser extension](images/flipsum-ipsum-example-1.png)
 
-The browser extension is just a thin wrapper for the [Power Plugins Ipsum API](https://power-plugins.com/developer-tools/ipsum-text-generator/)
+The browser extension is just a thin wrapper (using jQuery) for the [Power Plugins Ipsum API](https://power-plugins.com/developer-tools/ipsum-text-generator/)
 
 Source for the extension is in the "browser-extension" directory.
 
 [Download for Firefox](https://addons.mozilla.org/en-GB/firefox/addon/flipsum-ipsum/)
+
 [Download for Chrome](https://chrome.google.com/webstore/detail/flipsum-ipsum/ofhjecammkdgkmnlenoicodomedkbgnk)
 
-## Using it in node
+## Calling Flipsum Ipsum from node
 
 Generate Lorem Ipsum text using the Flipsum Ipsum API at power-plugins.com. There are no module dependencies, it supports multiple ipsum text generators, and you can return HTML or an array of paragraphs (strings).
 
-`npm i @headwall/flipsum-ipsum`
+	npm i @headwall/flipsum-ipsum
 
 ### Sample usage
 
