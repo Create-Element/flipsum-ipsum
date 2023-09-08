@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="generate_ipsum.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div id="controls">
+            <select id="ipsum-chooser" disabled></select>
+            <div class="field">
+                <label for="paragraph-count">&times;</label>
+                <input name="paragraph-count" id="paragraph-count" type="number" title="How many paragraphs" disabled />
+            </div>
+            <button id="copy-ipsum-html" class="copy-ipsum" disabled style="opacity: 0.33;" title="Copy as HTML"><img src="../assets/html-icon.svg" /></button>
+            <button id="copy-ipsum-text" class="copy-ipsum" disabled style="opacity: 0.33;" title="Copy as plain text"><img src="../assets/text-icon.svg" /></button>
+        </div>
+        <div id="error-no-ipsums" class="alert" style="display: none;">Couldn't load Ipsums (A)</div>
+        <div id="error-bad-ipsum" class="alert" style="display: none;">Couldn't load Ipsum (B)</div>
+        <div class="output-container">
+            <div id="loader"></div>
+            <div class="inner-container">
+                <div id="output"></div>
+            </div>
+            <div id="overlay" style="display: none;">
+                <div class="bubble">Copied</div>
+            </div>
+        </div>
+    </div>
+    <div id="debug"></div>
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="generate_ipsum.js"></script>
+</body>
+
+</html>
