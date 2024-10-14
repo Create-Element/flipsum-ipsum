@@ -1,94 +1,87 @@
 /**
  * index.js
- * 
+ *
  * Generate ipsum text using the Flipsum Ipsum API. More info here
  *
  * https://power-plugins.com/developer-tools/ipsum-text-generator/
  */
 
 const self = {
+  ipsums: {},
+  apiUrl: 'https://power-plugins.com/api/flipsum',
+  defaultSlug: 'lorem-ipsum',
+  defaultParagraphCount: 5,
 
-	ipsums: {},
+  getIpsums: () => {
+    return new Promise((resolve, reject) => {
+      if (Object.keys(self.ipsums).length > 0) {
+        resolve(self.ipsums);
+      } else {
+        fetch(`${self.apiUrl}/ipsum`)
+          .then((response) => response.json())
+          .then((ipsumMetas) => {
+            if (!Array.isArray(ipsumMetas)) {
+              reject('Did not receive an array');
+            }
 
-	apiUrl: 'https://power-plugins.com/api/flipsum',
+            self.ipsums = {};
+            ipsumMetas.forEach((ipsumMeta) => {
+              self.ipsums[ipsumMeta.slug] = ipsumMeta;
+            });
 
-	defaultSlug: 'lorem-ipsum',
+            resolve(self.ipsums);
+          });
+      }
+    });
+  },
 
-	defaultParagraphCount: 5,
+  getIpsumMeta: (ipsumSlug) => {
+    return new Promise((resolve, reject) => {
+      self.getIpsums().then((ipsumMetas) => {
+        if (typeof ipsumMetas[ipsumSlug] === 'undefined') {
+          reject(`Unknown ipsum: ${ipsumSlug}`);
+        }
 
-	getIpsums: () => {
-		return new Promise((resolve, reject) => {
-			if (Object.keys(self.ipsums).length > 0) {
-				resolve(self.ipsums);
-			} else {
-				fetch(`${self.apiUrl}/ipsum`)
-					.then((response) => response.json())
-					.then((ipsumMetas) => {
-						if (!Array.isArray(ipsumMetas)) {
-							reject('Did not receive an array');
-						}
+        resolve(ipsumMetas[ipsumSlug]);
+      });
+    });
+  },
 
-						self.ipsums = {};
-						ipsumMetas.forEach((ipsumMeta) => {
-							self.ipsums[ipsumMeta.slug] = ipsumMeta;
-						});
+  generateArray: (ipsumSlug, paragraphCount) => {
+    return self.generate(ipsumSlug, paragraphCount, false);
+  },
 
-						resolve(self.ipsums);
-					});
-			}
-		});
-	},
+  generateHtml: (ipsumSlug, paragraphCount) => {
+    return self.generate(ipsumSlug, paragraphCount, true);
+  },
 
-	getIpsumMeta: (ipsumSlug) => {
-		return new Promise((resolve, reject) => {
-			self.getIpsums()
-				.then((ipsumMetas) => {
-					if (typeof ipsumMetas[ipsumSlug] === 'undefined') {
-						reject(`Unknown ipsum: ${ipsumSlug}`);
-					}
+  generate: (ipsumSlug, paragraphCount, asHtml) => {
+    return new Promise((resolve, reject) => {
+      if (!ipsumSlug) {
+        ipsumSlug = self.defaultSlug;
+      }
 
-					resolve(ipsumMetas[ipsumSlug]);
-				});
-		});
-	},
+      paragraphCount = paragraphCount ? parseInt(paragraphCount) : self.defaultParagraphCount;
+      if (paragraphCount <= 0) {
+        reject(`Invalid paragraph count: ${paragraphCount}`);
+      }
 
-	generateArray: (ipsumSlug, paragraphCount) => {
-		return self.generate(ipsumSlug, paragraphCount, false);
-	},
+      const url = `${self.apiUrl}/ipsum/${ipsumSlug}?paragraphs=${paragraphCount}`;
 
-	generateHtml: (ipsumSlug, paragraphCount) => {
-		return self.generate(ipsumSlug, paragraphCount, true);
-	},
+      // Diagnostics
+      // console.log(`URL: ${url}`);
 
-	generate: (ipsumSlug, paragraphCount, asHtml) => {
-		return new Promise((resolve, reject) => {
-			if (!ipsumSlug) {
-				ipsumSlug = self.defaultSlug;
-			}
-
-			paragraphCount = paragraphCount ? parseInt(paragraphCount) : self.defaultParagraphCount;
-			if (paragraphCount <= 0) {
-				reject(`Invalid paragraph count: ${paragraphCount}`)
-			}
-
-			const url = `${self.apiUrl}/ipsum/${ipsumSlug}?paragraphs=${paragraphCount}`;
-
-			// Diagnostics
-			// console.log(`URL: ${url}`);
-
-			fetch(url)
-				.then(response => response.json())
-				.then((ipsum) => {
-					if (asHtml) {
-						resolve('<p>' + ipsum.join('</p><p>') + '</p>');
-					} else {
-						resolve(ipsum);
-					}
-				});
-
-		});
-	}
+      fetch(url)
+        .then((response) => response.json())
+        .then((ipsum) => {
+          if (asHtml) {
+            resolve('<p>' + ipsum.join('</p><p>') + '</p>');
+          } else {
+            resolve(ipsum);
+          }
+        });
+    });
+  },
 };
-
 
 module.exports = self;
